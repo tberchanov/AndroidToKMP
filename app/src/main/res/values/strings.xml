@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AndroidToKMP</string>
+    <string name="next_number">Next Number</string>
+    <string name="arrow_left"><![CDATA[<-]]></string>
+</resources>
