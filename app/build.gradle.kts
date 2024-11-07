@@ -49,12 +49,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation(libs.koin.android)
-    implementation(libs.androidx.datastore.preferences)
-
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.logging.interceptor)
-    implementation(libs.okhttp)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)

@@ -33,13 +33,4 @@ class NumbersRepositoryImpl(
     override suspend fun saveNumber(number: Int) {
         localDataSource.saveNumber(number)
     }
-
-    companion object {
-        // TODO use DI
-        fun create(dataStore: DataStore<Preferences>): NumbersRepository {
-            val localDataSource = NumbersLocalDataSource(dataStore)
-            val remoteDataSource = NumbersRemoteDataSource(getApiClient("http://numbersapi.com/", Ktorfit::createNumbersApi))
-            return NumbersRepositoryImpl(localDataSource, remoteDataSource)
-        }
-    }
 }
