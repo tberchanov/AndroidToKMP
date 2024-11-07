@@ -3,7 +3,7 @@ agp = "8.6.1"
 converterGson = "2.5.0"
 datastorePreferences = "1.1.1"
 koinAndroid = "3.4.3"
-kotlin = "1.9.0"
+kotlin = "2.0.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -15,6 +15,8 @@ material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.1.4"
 retrofit = "2.11.0"
+android-compileSdk = "34"
+android-minSdk = "24"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,4 +39,5 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
