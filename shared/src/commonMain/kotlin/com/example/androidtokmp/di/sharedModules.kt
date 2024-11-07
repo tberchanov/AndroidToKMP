@@ -15,6 +15,8 @@ import org.koin.dsl.module
 
 expect fun dataStoreModule(): Module
 
+expect fun viewModelModule(): Module
+
 val dataModule = module {
     includes(dataStoreModule())
     single { NumbersLocalDataSource(get()) }
@@ -27,4 +29,12 @@ val domainModule = module {
     factory { GetNumberInfoUseCase(get()) }
     factory { GetSavedNumberInfoUseCase(get()) }
     factory { SaveNumberUseCase(get()) }
+}
+
+val presentationModule = module {
+    includes(viewModelModule())
+}
+
+val appModule = module {
+    includes(dataModule, domainModule, presentationModule)
 }

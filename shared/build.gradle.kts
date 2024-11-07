@@ -43,6 +43,8 @@ kotlin {
             implementation(libs.ktorfit.lib)
 
             implementation(libs.koin.core)
+
+            implementation(libs.androidx.lifecycle.viewmodel)
         }
         androidMain.dependencies {
             implementation(libs.koin.android)
