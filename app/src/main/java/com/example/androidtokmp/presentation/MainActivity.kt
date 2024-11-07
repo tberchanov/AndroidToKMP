@@ -35,7 +35,10 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             viewModel.error
-                .collect { onError(it) }
+                .collect {
+                    Log.e(TAG, "Error: $it")
+                    onError(it)
+                }
         }
         lifecycleScope.launch {
             viewModel.state

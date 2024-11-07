@@ -1,10 +1,10 @@
 package com.example.androidtokmp.data.remote
 
-import retrofit2.http.GET
-import retrofit2.http.Path
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Path
 
 interface NumbersApi {
 
-    @GET("/{number}?json")
+    @GET("{number}?json")
     suspend fun getNumberInfo(@Path("number") number: Int): NumberInfoResponse
 }
