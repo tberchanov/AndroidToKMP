@@ -20,11 +20,11 @@ class NumbersInfoViewModel(
     private val saveNumberUseCase: SaveNumberUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<NumbersInfoState>(NumbersInfoState.Initial)
+    private val _state = MutableStateFlow<NumbersInfoState>(NumbersInfoState())
     val state: StateFlow<NumbersInfoState> = _state
 
-    private val _error = MutableSharedFlow<NumbersInfoState.Error>()
-    val error: SharedFlow<NumbersInfoState.Error> = _error
+    private val _error = MutableSharedFlow<String>()
+    val error: SharedFlow<String> = _error
 
     fun loadNumberInfo() {
         viewModelScope.launch {
@@ -36,9 +36,9 @@ class NumbersInfoViewModel(
 
     fun generateNewNumber() {
         viewModelScope.launch {
-            val currentState = state.value
-            if (currentState is NumbersInfoState.Success) {
-                val newNumber = currentState.numberInfo.number + 1
+            val currentNumberInfo = state.value.numberInfo
+            if (currentNumberInfo != null) {
+                val newNumber = currentNumberInfo.number + 1
                 retrieveAndSaveNumberInfo(newNumber)
             }
         }
@@ -46,9 +46,9 @@ class NumbersInfoViewModel(
 
     fun loadPreviousNumber() {
         viewModelScope.launch {
-            val currentState = state.value
-            if (currentState is NumbersInfoState.Success) {
-                val previousNumber = currentState.numberInfo.number - 1
+            val currentNumberInfo = state.value.numberInfo
+            if (currentNumberInfo != null) {
+                val previousNumber = currentNumberInfo.number - 1
                 retrieveAndSaveNumberInfo(previousNumber)
             }
         }
@@ -68,13 +68,26 @@ class NumbersInfoViewModel(
 
     private fun emitAsState(lce: LCE<NumberInfo>) {
         val newState = when (lce) {
-            is LCE.Loading -> NumbersInfoState.Loading
-            is LCE.Content -> NumbersInfoState.Success(lce.data)
-            is LCE.Error -> NumbersInfoState.Error(lce.message)
+            is LCE.Loading -> state.value.copy(
+                loading = true,
+                errorMessage = null,
+            )
+
+            is LCE.Content ->
+                state.value.copy(
+                    loading = false,
+                    numberInfo = lce.data,
+                    errorMessage = null,
+                )
+
+            is LCE.Error -> state.value.copy(
+                loading = false,
+                errorMessage = lce.message,
+            )
         }
-        if (newState is NumbersInfoState.Error) {
+        if (newState.errorMessage != null) {
             viewModelScope.launch {
-                _error.emit(newState)
+                _error.emit(newState.errorMessage)
             }
         } else {
             _state.value = newState

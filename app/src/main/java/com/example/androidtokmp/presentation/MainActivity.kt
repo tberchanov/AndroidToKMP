@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.error
                 .collect {
                     Log.e(TAG, "Error: $it")
+                    binding.progress.isVisible = false
                     onError(it)
                 }
         }
@@ -45,22 +46,14 @@ class MainActivity : AppCompatActivity() {
                 .flowWithLifecycle(lifecycle)
                 .collect { state ->
                     Log.d(TAG, "State: $state")
-                    when (state) {
-                        is NumbersInfoState.Initial -> {
-                            binding.progress.isGone = true
-                        }
+                    binding.progress.isVisible = state.loading
+                    if (state.numberInfo != null) {
+                        binding.numberTv.text = state.numberInfo?.number.toString()
+                        binding.descriptionTv.text = state.numberInfo?.info
+                    }
 
-                        is NumbersInfoState.Loading -> {
-                            binding.progress.isVisible = true
-                        }
-
-                        is NumbersInfoState.Success -> {
-                            binding.progress.isGone = true
-                            binding.numberTv.text = state.numberInfo.number.toString()
-                            binding.descriptionTv.text = state.numberInfo.info
-                        }
-
-                        is NumbersInfoState.Error -> onError(state)
+                    state.errorMessage?.let {
+                        onError(it)
                     }
                 }
         }
@@ -75,9 +68,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onError(errorState: NumbersInfoState.Error) {
-        binding.progress.isGone = true
-        showErrorSnackBar(errorState.message)
+    private fun onError(errorMessage: String) {
+        showErrorSnackBar(errorMessage)
     }
 
 

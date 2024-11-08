@@ -104,37 +104,31 @@ struct MainView: View {
         }
         .task {
             for await error in viewModel.error {
+                isLoading = false
                 onError(error)
+                
             }
         }
         .task {
             for await state in viewModel.state {
-                switch state {
-                    case is NumbersInfoState.Initial:
-                        isLoading = false
-                        errorMessage = nil
-                    case is NumbersInfoState.Loading:
-                        isLoading = true
-                        errorMessage = nil
-                    case let successState as NumbersInfoState.Success:
-                        isLoading = false
-                        number = "\(successState.numberInfo.number)"
-                        description = successState.numberInfo.info
-                        errorMessage = nil
-                    case let error as NumbersInfoState.Error:
-                        onError(error)
-                    default:
-                        break
+                isLoading = state.loading
+                if state.numberInfo != nil {
+                    number = "\(state.numberInfo!.number)"
+                    description = state.numberInfo!.info
+                }
+                
+                if state.errorMessage != nil {
+                    onError(state.errorMessage!)
                 }
             }
         }
     }
     
-    private func onError(_ error: NumbersInfoState.Error) {
+    private func onError(_ errorMessage: String) {
         isLoading = false
-        errorMessage = error.message
+        self.errorMessage = errorMessage
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            errorMessage = nil
+            self.errorMessage = nil
         }
     }
 }
